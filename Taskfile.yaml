@@ -1,0 +1,59 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  init-env:
+    cmds:
+      # - git submodule add https://github.com/DepthAnything/Depth-Anything-V2.git src/x_vit/libs/depth_anything
+      - uv venv
+      - task: env
+    silent: true
+
+  env:
+    cmds:
+      - uv pip compile pyproject.toml -o requirements.txt -q
+      - uv pip sync requirements.txt
+      - uv pip install -e .
+    silent: true
+
+  lab:
+    cmds:
+      - PYTORCH_ENABLE_MPS_FALLBACK=1 jupyter lab --no-browser --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password='' --allow-root
+    silent: true
+
+  datasets:
+    cmds:
+      - task: cid
+    silent: true
+
+  models:
+    cmds:
+      - task: fastsam
+      - task: depthanythingv2-metric-medium
+    silent: true
+
+  ### individual datasets
+  cid:
+    cmds:
+      - echo "This is downloading ~4.5GB. Maybe grab some biscotti while you wait."
+      - mkdir -p data/cid
+      - curl -L https://cid-21.s3.amazonaws.com/images.tar.gz | tar xzf - -C data/cid/
+      - curl -L https://cid-21.s3.amazonaws.com/yt_images.tar.gz | tar xzf - -C data/cid/
+      - curl -L https://cid-21.s3.amazonaws.com/dataset.csv -o data/cid/dataset.csv
+    silent: true
+      
+  ### individual models ###
+  fastsam:
+    cmds:
+      - curl -L https://github.com/ultralytics/assets/releases/download/v8.1.0/FastSAM-x.pt -o models/FastSam-x.pt
+    silent: true
+
+  depthanythingv2-metric-medium:
+    cmds:
+      - curl -L https://huggingface.co/depth-anything/Depth-Anything-V2-Metric-Hypersim-Base/resolve/main/depth_anything_v2_metric_hypersim_vitb.pth?download=true -o models/depth_anything_v2_metric_hypersim_vitb.pth
+    silent: true
+
+  yolov8s-world:
+    cmds:
+      - curl -L https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-world.pt -o models/yolov8s-world.pt

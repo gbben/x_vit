@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "x-vit"
+dynamic = ["version"]
+description = "Experiments in eyeing up cattle."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = []
+authors = []
+
+dependencies = [
+  "accelerate",
+  "clip@git+https://github.com/openai/CLIP.git",
+  "datasets",
+  "jupyterlab",
+  "jupytext>=1.16.4",
+  "lapx>=0.5.11",
+  "pandas",
+  "pillow",
+  "polars",
+  "pyarrow",
+  "pytubefix>=8.5.1",
+  "sam-2@git+https://github.com/facebookresearch/sam2.git",
+  "schedulefree",
+  "scikit-learn",
+  "supervision[assets]",
+  "timm",
+  "torch",
+  "torchvision",
+  "tqdm",
+  "transformers",
+  "ultralytics",
+  "wandb",
+  "xgboost",
+]
+
+[tool.hatch.version]
+path = "src/x_vit/__about__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
